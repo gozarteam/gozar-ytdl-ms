@@ -21,6 +21,7 @@ COPY . /app
 # Install the dependencies using Poetry
 RUN poetry install 
 
+ARG GYTDL_API_KEY
 
 # Expose the port FastAPI will run on
 EXPOSE 8000

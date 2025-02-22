@@ -22,7 +22,7 @@ def root():
 @app.post("/download")
 async def download_video(payload: DownloadPayload, api_key: str = Depends(get_api_key)):
     file_name = payload.url
-    file_name = file_name.replace(".", "_")
+    file_name = file_name[file_name.find("v=") :]
     with tempfile.TemporaryDirectory() as temp_dir:
         temp_file_path = os.path.join(temp_dir, f"{file_name}.mp4")
         ydl_opts = {

@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends
 from fastapi.responses import FileResponse
 from fastapi.exceptions import HTTPException
+from fastapi.background import BackgroundTasks
 import tempfile
 import os
 import yt_dlp
@@ -20,8 +21,17 @@ def root():
     }
 
 
+def remove_file(file_path: str):
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
+
 @app.post("/download")
-async def download_video(payload: DownloadPayload, api_key: str = Depends(get_api_key)):
+async def download_video(
+    payload: DownloadPayload,
+    background_tasks: BackgroundTasks,
+    api_key: str = Depends(get_api_key),
+):
     file_name = payload.url
     file_name = file_name[file_name.find("v=") :]
     file_name = clean_filename(file_name)
@@ -39,8 +49,7 @@ async def download_video(payload: DownloadPayload, api_key: str = Depends(get_ap
         raise HTTPException(
             status_code=500, detail=f"Failed to download video: {str(e)}"
         )
-    response = FileResponse(
+    background_tasks.add_task(remove_file, temp_file_path)
+    return FileResponse(
         temp_file_path, media_type="video/mp4", filename=f"{file_name}.mp4"
     )
-    os.remove(temp_file_path)
-    return response

@@ -7,3 +7,4 @@ class DownloadPayload(BaseModel):
     format: Literal["best", "worst"] = Field(default="worst")
     noplaylist: bool = Field(default=True)
     geo_bypass: bool = Field(default=True)
+    extractaudio: bool = Field(default=False)

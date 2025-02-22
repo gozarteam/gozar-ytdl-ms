@@ -35,12 +35,15 @@ async def download_video(
     file_name = payload.url
     file_name = file_name[file_name.find("v=") :]
     file_name = clean_filename(file_name)
-    temp_file_path = os.path.join(f"{file_name}.mp4")
+    temp_file_path = os.path.join(
+        f"{file_name}.{'mp3' if payload.extractaudio else 'mp4'}"
+    )
     ydl_opts = {
         "format": payload.format,
         "outtmpl": temp_file_path,
         "noplaylist": payload.noplaylist,
         "geo_bypass": payload.geo_bypass,
+        "extractaudio": payload.extractaudio,
     }
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:

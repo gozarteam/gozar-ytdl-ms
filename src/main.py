@@ -7,6 +7,7 @@ import yt_dlp
 
 from .models import DownloadPayload
 from .deps import get_api_key
+from .utils import clean_filename
 
 
 app = FastAPI()
@@ -23,6 +24,7 @@ def root():
 async def download_video(payload: DownloadPayload, api_key: str = Depends(get_api_key)):
     file_name = payload.url
     file_name = file_name[file_name.find("v=") :]
+    file_name = clean_filename(file_name)
     with tempfile.TemporaryDirectory() as temp_dir:
         temp_file_path = os.path.join(temp_dir, f"{file_name}.mp4")
         ydl_opts = {

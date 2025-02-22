@@ -39,6 +39,8 @@ async def download_video(payload: DownloadPayload, api_key: str = Depends(get_ap
         raise HTTPException(
             status_code=500, detail=f"Failed to download video: {str(e)}"
         )
-    return FileResponse(
+    response = FileResponse(
         temp_file_path, media_type="video/mp4", filename=f"{file_name}.mp4"
     )
+    os.remove(temp_file_path)
+    return response

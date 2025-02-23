@@ -43,6 +43,7 @@ async def download_video(
         "noplaylist": payload.noplaylist,
         "geo_bypass": payload.geo_bypass,
         "extractaudio": payload.extractaudio,
+        "cookies": "cookies.txt",
     }
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
